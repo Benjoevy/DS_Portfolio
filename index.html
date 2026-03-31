@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Benjamin Ilevbare — Data Scientist</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #040d1a;
+      --bg-card: #0b1525;
+      --bg-card-hover: #101e33;
+      --border: rgba(34, 211, 238, 0.12);
+      --border-hover: rgba(34, 211, 238, 0.35);
+      --cyan: #22d3ee;
+      --cyan-dim: rgba(34, 211, 238, 0.08);
+      --text-primary: #e2e8f0;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg-primary); color: var(--text-primary); font-family: 'Syne', sans-serif; overflow-x: hidden; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(34,211,238,0.03) 1px,transparent 1px), linear-gradient(90deg,rgba(34,211,238,0.03) 1px,transparent 1px);
+      background-size: 60px 60px; pointer-events: none; z-index: 0;
+    }
+    .orb { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
+    .orb-1 { width:500px;height:500px;background:radial-gradient(circle,rgba(34,211,238,0.12) 0%,transparent 70%);top:-150px;left:-150px; }
+    .orb-2 { width:400px;height:400px;background:radial-gradient(circle,rgba(56,189,248,0.08) 0%,transparent 70%);bottom:20%;right:-100px; }
+    .orb-3 { width:300px;height:300px;background:radial-gradient(circle,rgba(99,102,241,0.06) 0%,transparent 70%);top:50%;left:40%; }
+    nav { position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(4,13,26,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border); }
+    .nav-inner { max-width:1200px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between; }
+    .nav-logo { font-family:'DM Mono',monospace;font-size:0.85rem;color:var(--cyan);letter-spacing:0.05em;text-decoration:none; }
+    .nav-links { display:flex;gap:2.5rem;list-style:none; }
+    .nav-links a { font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--text-dim);text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;transition:color 0.2s;position:relative; }
+    .nav-links a::after { content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--cyan);transform:scaleX(0);transition:transform 0.25s ease; }
+    .nav-links a:hover { color:var(--cyan); }
+    .nav-links a:hover::after { transform:scaleX(1); }
+    .hamburger { display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px; }
+    .hamburger span { display:block;width:22px;height:2px;background:var(--text-dim);transition:all 0.3s; }
+    .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity:0; }
+    .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+    .mobile-menu { display:none;flex-direction:column;background:rgba(4,13,26,0.97);border-bottom:1px solid var(--border);padding:1rem 2rem 1.5rem;gap:1.2rem; }
+    .mobile-menu.open { display:flex; }
+    .mobile-menu a { font-family:'DM Mono',monospace;font-size:0.82rem;color:var(--text-dim);text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;transition:color 0.2s; }
+    .mobile-menu a:hover { color:var(--cyan); }
+    section { position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:6rem 2rem; }
+    #hero { min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:100px; }
+    .hero-label { font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.7s ease 0.2s forwards; }
+    .hero-title { font-size:clamp(2.8rem,7vw,5.5rem);font-weight:800;line-height:1.05;letter-spacing:-0.02em;color:#f1f5f9;max-width:800px;opacity:0;animation:fadeUp 0.7s ease 0.4s forwards; }
+    .hero-title .accent { background:linear-gradient(135deg,#22d3ee,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+    .hero-sub { margin-top:1.8rem;max-width:560px;color:var(--text-dim);font-size:1.05rem;line-height:1.75;font-weight:400;opacity:0;animation:fadeUp 0.7s ease 0.6s forwards; }
+    .hero-actions { margin-top:2.8rem;display:flex;gap:1rem;flex-wrap:wrap;opacity:0;animation:fadeUp 0.7s ease 0.8s forwards; }
+    .btn-primary { display:inline-flex;align-items:center;gap:0.5rem;padding:0.85rem 2rem;background:var(--cyan);color:#040d1a;font-family:'DM Mono',monospace;font-size:0.82rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:all 0.25s ease;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%); }
+    .btn-primary:hover { background:#67e8f9;transform:translateY(-2px);box-shadow:0 10px 30px rgba(34,211,238,0.25); }
+    .btn-outline { display:inline-flex;align-items:center;gap:0.5rem;padding:0.85rem 2rem;background:transparent;color:var(--text-dim);font-family:'DM Mono',monospace;font-size:0.82rem;letter-spacing:0.06em;text-transform:uppercase;border:1px solid var(--border);cursor:pointer;text-decoration:none;transition:all 0.25s ease; }
+    .btn-outline:hover { border-color:var(--cyan);color:var(--cyan); }
+    .hero-stats { margin-top:5rem;display:flex;gap:3rem;flex-wrap:wrap;opacity:0;animation:fadeUp 0.7s ease 1s forwards; }
+    .stat { display:flex;flex-direction:column;gap:0.25rem; }
+    .stat-num { font-size:2rem;font-weight:800;color:var(--cyan);line-height:1; }
+    .stat-label { font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted); }
+    .section-header { margin-bottom:4rem; }
+    .section-tag { font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.75rem; }
+    .section-tag::before { content:'';display:block;width:30px;height:1px;background:var(--cyan); }
+    .section-title { font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-0.02em;color:#f1f5f9; }
+    .about-grid { display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start; }
+    .about-text { color:var(--text-dim);font-size:1rem;line-height:1.85; }
+    .about-text p+p { margin-top:1.2rem; }
+    .about-text strong { color:var(--text-primary);font-weight:600; }
+    .skills-grid { display:grid;grid-template-columns:1fr 1fr;gap:0.75rem; }
+    .skill-item { display:flex;align-items:center;gap:0.6rem;padding:0.75rem 1rem;background:var(--bg-card);border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--text-dim);transition:all 0.2s; }
+    .skill-item::before { content:'▸';color:var(--cyan);font-size:0.65rem; }
+    .skill-item:hover { border-color:var(--border-hover);color:var(--text-primary);background:var(--bg-card-hover); }
+    .projects-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem; }
+    .project-card { background:var(--bg-card);border:1px solid var(--border);overflow:hidden;transition:all 0.35s ease;position:relative;display:flex;flex-direction:column; }
+    .project-card::before { content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--cyan-dim) 0%,transparent 60%);opacity:0;transition:opacity 0.35s ease;pointer-events:none; }
+    .project-card:hover { border-color:var(--border-hover);transform:translateY(-6px);box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(34,211,238,0.15); }
+    .project-card:hover::before { opacity:1; }
+    .project-img { width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden; }
+    .project-img-1 { background:linear-gradient(135deg,#0c2340 0%,#0a3a4a 50%,#0d1f35 100%); }
+    .project-img-2 { background:linear-gradient(135deg,#0f1f3d 0%,#1a1040 50%,#0a2030 100%); }
+    .project-img-3 { background:linear-gradient(135deg,#0a2a20 0%,#0c2040 50%,#1a1030 100%); }
+    .project-img-visual { position:absolute;inset:0;width:100%;height:100%; }
+    .project-img-icon { position:relative;z-index:1;font-size:2.5rem; }
+    .project-body { padding:1.75rem;display:flex;flex-direction:column;flex:1; }
+    .project-number { font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.15em;color:var(--cyan);margin-bottom:0.75rem;text-transform:uppercase; }
+    .project-title { font-size:1.2rem;font-weight:700;color:#f1f5f9;margin-bottom:0.75rem;letter-spacing:-0.01em; }
+    .project-desc { font-size:0.88rem;color:var(--text-muted);line-height:1.7;flex:1; }
+    .tech-stack { display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:1.25rem; }
+    .badge { font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.05em;padding:0.3rem 0.65rem;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);color:var(--cyan); }
+    .project-links { display:flex;gap:0.75rem;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border); }
+    .link-btn { display:inline-flex;align-items:center;gap:0.4rem;font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);text-decoration:none;padding:0.5rem 0.75rem;border:1px solid var(--border);transition:all 0.2s; }
+    .link-btn:hover { color:var(--cyan);border-color:var(--cyan);background:var(--cyan-dim); }
+    .link-btn svg { width:12px;height:12px; }
+    .certs-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem; }
+    .cert-card { display:flex;align-items:flex-start;gap:1.25rem;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border);transition:all 0.25s ease; }
+    .cert-card:hover { border-color:var(--border-hover);background:var(--bg-card-hover); }
+    .cert-icon { width:42px;height:42px;background:var(--cyan-dim);border:1px solid rgba(34,211,238,0.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0; }
+    .cert-info { flex:1;min-width:0; }
+    .cert-name { font-size:0.92rem;font-weight:600;color:#f1f5f9;margin-bottom:0.3rem;line-height:1.3; }
+    .cert-org { font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--cyan);letter-spacing:0.05em;margin-bottom:0.35rem; }
+    .cert-date { font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.05em; }
+    .done { color:#4ade80; }
+    .wip  { color:#fbbf24; }
+    .contact-inner { display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start; }
+    .contact-text { color:var(--text-dim);font-size:1rem;line-height:1.8;margin-top:1.5rem; }
+    .contact-email { display:inline-flex;align-items:center;gap:0.5rem;margin-top:2rem;font-family:'DM Mono',monospace;font-size:0.85rem;color:var(--cyan);text-decoration:none;transition:color 0.2s;word-break:break-all; }
+    .contact-email:hover { color:#67e8f9; }
+    .contact-form { display:flex;flex-direction:column;gap:1rem; }
+    .form-group { display:flex;flex-direction:column;gap:0.4rem; }
+    .form-label { font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted); }
+    .form-input, .form-textarea { background:var(--bg-card);border:1px solid var(--border);color:var(--text-primary);font-family:'Syne',sans-serif;font-size:0.9rem;padding:0.85rem 1rem;outline:none;transition:border-color 0.2s;resize:none; }
+    .form-input:focus, .form-textarea:focus { border-color:rgba(34,211,238,0.4); }
+    .form-input::placeholder, .form-textarea::placeholder { color:var(--text-muted); }
+    footer { position:relative;z-index:1;border-top:1px solid var(--border);padding:2.5rem 2rem; }
+    .footer-inner { max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem; }
+    .footer-copy { font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-muted);letter-spacing:0.05em; }
+    .social-links { display:flex;gap:1rem; }
+    .social-link { display:flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid var(--border);color:var(--text-muted);text-decoration:none;transition:all 0.25s ease; }
+    .social-link:hover { border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim); }
+    .social-link svg { width:16px;height:16px; }
+    .section-divider { position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem; }
+    .section-divider hr { border:none;border-top:1px solid var(--border); }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .reveal { opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease; }
+    .reveal.visible { opacity:1;transform:translateY(0); }
+    .cursor-glow { position:fixed;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(34,211,238,0.05) 0%,transparent 70%);pointer-events:none;transform:translate(-50%,-50%);z-index:0; }
+    @media(max-width:768px){
+      .nav-links{display:none} .hamburger{display:flex}
+      .about-grid,.contact-inner{grid-template-columns:1fr;gap:2.5rem}
+      .projects-grid{grid-template-columns:1fr}
+      section{padding:4rem 1.25rem}
+      .hero-stats{gap:2rem}
+      .footer-inner{flex-direction:column;align-items:flex-start}
+    }
+    @media(max-width:480px){ .skills-grid,.certs-grid{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+
+<div class="cursor-glow" id="cursorGlow"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">Benjamin Joseph Ilevbare<span style="color:#64748b"></span></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#certifications">Certifications</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about" class="mnl">About</a>
+    <a href="#projects" class="mnl">Projects</a>
+    <a href="#certifications" class="mnl">Certifications</a>
+    <a href="#contact" class="mnl">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-label">Data Scientist · Lagos, Nigeria</div>
+  <h1 class="hero-title">Extracting Insights<br>from <span class="accent">Complex Data</span></h1>
+  <p class="hero-sub">I build end-to-end machine learning pipelines — from messy raw data to actionable business insights. Specialising in customer segmentation, churn-risk analysis, and predictive modelling across retail and financial datasets.</p>
+  <div class="hero-actions">
+    <a href="#projects" class="btn-primary">
+      <svg viewBox="0 0 16 16" fill="none" style="width:14px;height:14px"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      View My Work
+    </a>
+    <a href="#contact" class="btn-outline">Get In Touch</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">3</span><span class="stat-label">ML Projects</span></div>
+    <div class="stat"><span class="stat-num">8.5K+</span><span class="stat-label">Records Processed</span></div>
+    <div class="stat"><span class="stat-num">4</span><span class="stat-label">Certifications</span></div>
+    <div class="stat"><span class="stat-num">R²0.86</span><span class="stat-label">Best Model Score</span></div>
+  </div>
+</section>
+
+<div class="section-divider"><hr /></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header reveal">
+    <div class="section-tag">01 — Profile</div>
+    <h2 class="section-title">About Me</h2>
+  </div>
+  <div class="about-grid">
+    <div class="reveal">
+      <div class="about-text">
+        <p>I'm <strong>Benjamin Joseph Ilevbare</strong>, a Data Scientist based in <strong>Lagos, Nigeria</strong>, with a proven track record of building end-to-end machine learning pipelines — from wrangling raw, messy data to delivering clear, actionable business insights.</p>
+        <p>I've built <strong>customer segmentation models</strong>, <strong>churn-risk analyses</strong>, and <strong>predictive regression systems</strong> across retail and financial datasets. I'm a strong communicator who translates complex findings into plain-language recommendations for non-technical stakeholders.</p>
+        <p>I hold an <strong>HND in Computer Science</strong> from Yaba College of Technology, and I'm actively expanding into <strong>deep learning (TensorFlow)</strong> and <strong>AWS infrastructure (S3, SageMaker)</strong>. Previously provided IT data analysis and reporting at IT Takes a Village.</p>
+      </div>
+    </div>
+    <div class="reveal" style="transition-delay:0.15s">
+      <div class="skills-grid">
+        <div class="skill-item">Python</div>
+        <div class="skill-item">SQL</div>
+        <div class="skill-item">Pandas / NumPy</div>
+        <div class="skill-item">SciPy</div>
+        <div class="skill-item">Scikit-learn</div>
+        <div class="skill-item">K-Means / Regression</div>
+        <div class="skill-item">Matplotlib / Seaborn</div>
+        <div class="skill-item">Microsoft Power BI</div>
+        <div class="skill-item">BigQuery (GCP)</div>
+        <div class="skill-item">Git / GitHub</div>
+        <div class="skill-item">Jupyter Notebook</div>
+        <div class="skill-item">TensorFlow (learning)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"><hr /></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header reveal">
+    <div class="section-tag">02 — Work</div>
+    <h2 class="section-title">Selected Projects</h2>
+  </div>
+  <div class="projects-grid">
+
+    <!-- Project 1 -->
+    <div class="project-card reveal">
+      <div class="project-img project-img-1">
+        <svg class="project-img-visual" viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="80"  cy="75"  r="30" fill="rgba(34,211,238,0.06)"  stroke="rgba(34,211,238,0.22)"  stroke-width="1"/>
+          <circle cx="200" cy="105" r="40" fill="rgba(129,140,248,0.06)" stroke="rgba(129,140,248,0.22)" stroke-width="1"/>
+          <circle cx="320" cy="75"  r="24" fill="rgba(251,191,36,0.06)"  stroke="rgba(251,191,36,0.2)"   stroke-width="1"/>
+          <circle cx="140" cy="160" r="33" fill="rgba(52,211,153,0.06)"  stroke="rgba(52,211,153,0.2)"   stroke-width="1"/>
+          <circle cx="295" cy="162" r="27" fill="rgba(249,115,22,0.06)"  stroke="rgba(249,115,22,0.18)"  stroke-width="1"/>
+          <circle cx="78"  cy="72"  r="4"   fill="rgba(34,211,238,0.75)"/>
+          <circle cx="88"  cy="80"  r="2.5" fill="rgba(34,211,238,0.55)"/>
+          <circle cx="197" cy="100" r="4"   fill="rgba(129,140,248,0.8)"/>
+          <circle cx="210" cy="112" r="2.5" fill="rgba(129,140,248,0.6)"/>
+          <circle cx="190" cy="112" r="2"   fill="rgba(129,140,248,0.5)"/>
+          <circle cx="138" cy="156" r="3.5" fill="rgba(52,211,153,0.75)"/>
+          <circle cx="150" cy="166" r="2.5" fill="rgba(52,211,153,0.55)"/>
+          <circle cx="293" cy="158" r="3.5" fill="rgba(249,115,22,0.7)"/>
+          <rect x="140" y="30" width="120" height="20" rx="3" fill="rgba(239,68,68,0.12)" stroke="rgba(239,68,68,0.3)" stroke-width="1"/>
+          <text x="200" y="44" text-anchor="middle" fill="rgba(239,68,68,0.9)" font-size="9" font-family="monospace">HIGH CHURN RISK: 22%</text>
+        </svg>
+        <span class="project-img-icon">💳</span>
+      </div>
+      <div class="project-body">
+        <div class="project-number">Project — 01 · Collaborative · 8,500+ records</div>
+        <h3 class="project-title">Credit Card Customer Segmentation &amp; Churn Risk Analysis</h3>
+        <p class="project-desc">Financial institutions lose revenue to preventable churn when they can't identify at-risk customers early. Led data cleaning and feature engineering on 8,500+ records, applied K-Means (k=5) to isolate a high-churn-risk cluster (22% of users) and a high-value segment (18%) generating disproportionate revenue — delivering retention recommendations projected to reduce churn by up to 15%.</p>
+        <div class="tech-stack">
+          <span class="badge">Python</span>
+          <span class="badge">Scikit-learn</span>
+          <span class="badge">K-Means</span>
+          <span class="badge">Pandas</span>
+          <span class="badge">Matplotlib</span>
+          <span class="badge">Seaborn</span>
+        </div>
+        <div class="project-links">
+          <!--
+            ACTION REQUIRED — GitHub Repo:
+            Replace the URL below with your actual repo link.
+            Example: https://github.com/benjaminilevbare/credit-card-segmentation
+          -->
+          <a href="https://github.com/Benjoevy/TS_Academy_Capstone_Project" class="link-btn" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            GitHub Repo
+          </a>
+          <!--
+            ACTION REQUIRED — Write-up / Notebook:
+            Replace the URL below with a link to your Kaggle notebook, Notion page, or Medium post.
+            Example: https://www.kaggle.com/code/benjaminilevbare/credit-card-segmentation
+          -->
+          <a href="https://www.linkedin.com/posts/benjoevy_leveraging-machine-learning-for-customer-activity-7443616639721410560-yXj8?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFEFTMEB_plW3DFUBxKrLKrlycjEPDacc4o" class="link-btn" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M6 1h8v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 1L6 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 3H1v12h12v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            LinkedIn Post
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project 2 -->
+    <div class="project-card reveal" style="transition-delay:0.1s">
+      <div class="project-img project-img-2">
+        <svg class="project-img-visual" viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+          <line x1="40" y1="185" x2="380" y2="40" stroke="rgba(34,211,238,0.5)" stroke-width="2" stroke-dasharray="5 3"/>
+          <circle cx="60"  cy="172" r="3.5" fill="rgba(129,140,248,0.7)"/>
+          <circle cx="92"  cy="158" r="3"   fill="rgba(129,140,248,0.65)"/>
+          <circle cx="122" cy="143" r="3.5" fill="rgba(129,140,248,0.7)"/>
+          <circle cx="157" cy="126" r="3"   fill="rgba(129,140,248,0.65)"/>
+          <circle cx="186" cy="112" r="4"   fill="rgba(34,211,238,0.8)"/>
+          <circle cx="218" cy="98"  r="3"   fill="rgba(129,140,248,0.7)"/>
+          <circle cx="248" cy="84"  r="3.5" fill="rgba(129,140,248,0.65)"/>
+          <circle cx="282" cy="70"  r="3"   fill="rgba(129,140,248,0.7)"/>
+          <circle cx="318" cy="58"  r="4"   fill="rgba(34,211,238,0.8)"/>
+          <circle cx="352" cy="47"  r="3"   fill="rgba(129,140,248,0.65)"/>
+          <line x1="40" y1="185" x2="380" y2="185" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+          <line x1="40" y1="30"  x2="40"  y2="185" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+          <rect x="270" y="152" width="100" height="22" rx="3" fill="rgba(34,211,238,0.1)" stroke="rgba(34,211,238,0.25)" stroke-width="1"/>
+          <text x="320" y="167" text-anchor="middle" fill="rgba(34,211,238,0.9)" font-size="10" font-family="monospace">R² = 0.86</text>
+          <rect x="270" y="178" width="100" height="20" rx="3" fill="rgba(129,140,248,0.08)" stroke="rgba(129,140,248,0.2)" stroke-width="1"/>
+          <text x="320" y="192" text-anchor="middle" fill="rgba(129,140,248,0.8)" font-size="9.5" font-family="monospace">MAE ±2.1 MPG</text>
+        </svg>
+        <span class="project-img-icon">🚗</span>
+      </div>
+      <div class="project-body">
+        <div class="project-number">Project — 02 · End-to-end regression · 398 records</div>
+        <h3 class="project-title">Auto MPG Fuel Efficiency Prediction</h3>
+        <p class="project-desc">Complex interactions between engine specs make fuel efficiency hard to estimate accurately, limiting informed purchasing decisions. Built a Multiple Linear Regression pipeline on 398 vehicle records — with median imputation for missing values and one-hot encoding — achieving R² of 0.86 and MAE of ±2.1 MPG, supported by 12 diagnostic visualisations for a non-technical audience.</p>
+        <div class="tech-stack">
+          <span class="badge">Python</span>
+          <span class="badge">Scikit-learn</span>
+          <span class="badge">Pandas</span>
+          <span class="badge">NumPy</span>
+          <span class="badge">Matplotlib</span>
+          <span class="badge">Seaborn</span>
+        </div>
+        <div class="project-links">
+          <!--
+            ACTION REQUIRED — GitHub Repo:
+            Replace the URL below with your actual repo link.
+            Example: https://github.com/benjaminilevbare/auto-mpg-prediction
+          -->
+          <a href="https://github.com/Benjoevy/auto-mpg-efficiency-analysis" class="link-btn" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            GitHub Repo
+          </a>
+          <!--
+            ACTION REQUIRED — Write-up / Notebook:
+            Replace with your Kaggle notebook, Medium article, or Notion write-up link.
+            Example: https://www.kaggle.com/code/benjaminilevbare/auto-mpg-regression
+          -->
+          <a href="https://www.linkedin.com/posts/benjoevy_github-benjoevyauto-mpg-efficiency-analysis-activity-7417992791739305984-auFR?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFEFTMEB_plW3DFUBxKrLKrlycjEPDacc4o" class="link-btn" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M6 1h8v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 1L6 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 3H1v12h12v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            LinkedIn Post
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project 3 -->
+    <div class="project-card reveal" style="transition-delay:0.2s">
+      <div class="project-img project-img-3">
+        <svg class="project-img-visual" viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="145" cy="100" r="46" fill="rgba(52,211,153,0.05)"  stroke="rgba(52,211,153,0.2)"   stroke-width="1"/>
+          <circle cx="262" cy="130" r="38" fill="rgba(34,211,238,0.05)"  stroke="rgba(34,211,238,0.2)"   stroke-width="1"/>
+          <circle cx="95"  cy="160" r="30" fill="rgba(251,191,36,0.05)"  stroke="rgba(251,191,36,0.18)"  stroke-width="1"/>
+          <circle cx="315" cy="76"  r="35" fill="rgba(129,140,248,0.05)" stroke="rgba(129,140,248,0.2)"  stroke-width="1"/>
+          <circle cx="210" cy="50"  r="28" fill="rgba(249,115,22,0.05)"  stroke="rgba(249,115,22,0.18)"  stroke-width="1"/>
+          <circle cx="143" cy="96"  r="4"   fill="rgba(52,211,153,0.8)"/>
+          <circle cx="156" cy="108" r="3"   fill="rgba(52,211,153,0.6)"/>
+          <circle cx="134" cy="108" r="2.5" fill="rgba(52,211,153,0.5)"/>
+          <circle cx="260" cy="126" r="4"   fill="rgba(34,211,238,0.8)"/>
+          <circle cx="272" cy="138" r="3"   fill="rgba(34,211,238,0.6)"/>
+          <circle cx="313" cy="73"  r="4"   fill="rgba(129,140,248,0.8)"/>
+          <circle cx="324" cy="84"  r="3"   fill="rgba(129,140,248,0.6)"/>
+          <circle cx="208" cy="47"  r="3.5" fill="rgba(249,115,22,0.75)"/>
+          <circle cx="94"  cy="157" r="3.5" fill="rgba(251,191,36,0.75)"/>
+          <rect x="14" y="14" width="148" height="20" rx="3" fill="rgba(52,211,153,0.08)" stroke="rgba(52,211,153,0.25)" stroke-width="1"/>
+          <text x="88" y="28" text-anchor="middle" fill="rgba(52,211,153,0.88)" font-size="9" font-family="monospace">SILHOUETTE: 0.55 · k=5</text>
+        </svg>
+        <span class="project-img-icon">🛍️</span>
+      </div>
+      <div class="project-body">
+        <div class="project-number">Project — 03 · Retail personas · ~200 records</div>
+        <h3 class="project-title">Customer Segmentation using K-Means Clustering</h3>
+        <p class="project-desc">Generic promotions leave high-value retail customers under-served and budgets wasted. Segmented ~200 customers into 5 distinct personas by annual income and spending score using the Elbow Method and Silhouette Analysis — identifying a cluster accounting for 40% of premium brand engagements and translating findings into 4 marketing recommendations subsequently adopted by the project stakeholder.</p>
+        <div class="tech-stack">
+          <span class="badge">Python</span>
+          <span class="badge">Scikit-learn</span>
+          <span class="badge">K-Means</span>
+          <span class="badge">MDS</span>
+          <span class="badge">Matplotlib</span>
+          <span class="badge">Seaborn</span>
+        </div>
+        <div class="project-links">
+          <!--
+            ACTION REQUIRED — GitHub Repo:
+            Replace the URL below with your actual repo link.
+            Example: https://github.com/benjaminilevbare/retail-customer-segmentation
+          -->
+          <a href="https://github.com/Benjoevy/Mall_Custormers_Segementation" class="link-btn" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            GitHub Repo
+          </a>
+          <!--
+            ACTION REQUIRED — Write-up / Notebook:
+            Replace with your Kaggle notebook, Medium article, or Notion write-up link.
+            Example: https://www.kaggle.com/code/benjaminilevbare/retail-segmentation
+          -->
+          <a href="https://www.linkedin.com/posts/benjoevy_datascience-machinelearning-kmeans-activity-7425852094072582145-8IDG?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFEFTMEB_plW3DFUBxKrLKrlycjEPDacc4o" class="link-btn" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M6 1h8v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 1L6 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 3H1v12h12v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            LinkedIn Post
+          </a>
+        </div>  
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"><hr /></div>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="section-header reveal">
+    <div class="section-tag">03 — Credentials</div>
+    <h2 class="section-title">Certifications &amp; Learning</h2>
+  </div>
+  <div class="certs-grid">
+
+    <div class="cert-card reveal">
+      <div class="cert-icon">🐍</div>
+      <div class="cert-info">
+        <div class="cert-name">Python for Data Science</div>
+        <div class="cert-org">DataCamp</div>
+        <div class="cert-date done">✓ Completed</div>
+      </div>
+    </div>
+
+    <div class="cert-card reveal" style="transition-delay:.08s">
+      <div class="cert-icon">📊</div>
+      <div class="cert-info">
+        <div class="cert-name">Data Analyst Certificate</div>
+        <div class="cert-org">IGCK Academy</div>
+        <div class="cert-date done">✓ Completed</div>
+      </div>
+    </div>
+
+    <div class="cert-card reveal" style="transition-delay:.16s">
+      <div class="cert-icon">🧠</div>
+      <div class="cert-info">
+        <div class="cert-name">Data Science Certificate</div>
+        <div class="cert-org">Ts Academy</div>
+        <div class="cert-date done">✓ Completed</div>
+      </div>
+    </div>
+
+    <div class="cert-card reveal" style="transition-delay:.24s">
+      <div class="cert-icon">🗄️</div>
+      <div class="cert-info">
+        <div class="cert-name">SQL Fundamentals Certificate</div>
+        <div class="cert-org">DataCamp</div>
+        <div class="cert-date wip">⏳ In Progress</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"><hr /></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="reveal">
+      <div class="section-tag">04 — Contact</div>
+      <h2 class="section-title">Let's Build<br>Something.</h2>
+      <p class="contact-text">Open to data science roles, junior ML engineering positions, and interesting project collaborations. If you're working on a problem that needs clear thinking applied to data — I'd love to connect.</p>
+      <!-- Email is taken directly from your CV — no changes needed here -->
+      <a href="mailto:ilevbarebenjaminjoseph@gmail.com" class="contact-email">
+        <svg viewBox="0 0 16 16" fill="none" style="width:14px;height:14px;flex-shrink:0"><rect x="1" y="3" width="14" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M1 4l7 5 7-5" stroke="currentColor" stroke-width="1.5"/></svg>
+        ilevbarebenjaminjoseph@gmail.com
+      </a>
+    </div>
+    <div class="reveal" style="transition-delay:.15s">
+      <div class="contact-form">
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-input" placeholder="Jane Smith" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="jane@company.io" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="form-textarea" rows="5" placeholder="Tell me about the problem you're working on..."></textarea>
+        </div>
+        <button class="btn-primary" style="align-self:flex-start;border:none;" onclick="handleSend(this)">
+          <svg viewBox="0 0 16 16" fill="none" style="width:13px;height:13px"><path d="M14 8H2M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Send Message
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <p class="footer-copy">© 2025 Benjamin Joseph Ilevbare — Lagos, Nigeria.</p>
+    <div class="social-links">
+      <!--
+        ACTION REQUIRED — LinkedIn:
+        Replace YOUR_LINKEDIN_SLUG with your profile URL slug.
+        Find it at: linkedin.com/in/[YOUR_SLUG]
+        Example: https://linkedin.com/in/benjamin-ilevbare
+      -->
+      <a href="https://www.linkedin.com/in/benjoevy/" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <!--
+        ACTION REQUIRED — GitHub:
+        Replace YOUR_GITHUB_USERNAME with your actual GitHub username.
+        Example: https://github.com/benjaminilevbare
+      -->
+      <a href="https://github.com/Benjoevy" class="social-link" aria-label="GitHub" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+      </a>
+      <!--
+        ACTION REQUIRED — Twitter/X:
+        Replace YOUR_TWITTER_HANDLE with your handle (without @).
+        Example: https://twitter.com/benjaminilevbare
+        If you don't use Twitter/X, delete this entire <a> block.
+      -->
+      <a href="https://x.com/DataBen_J" class="social-link" aria-label="Twitter / X" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const glow = document.getElementById('cursorGlow');
+  document.addEventListener('mousemove', e => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top  = e.clientY + 'px';
+  });
+  const hamburger  = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  document.querySelectorAll('.mnl').forEach(l => {
+    l.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    });
+  });
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(r => observer.observe(r));
+  function handleSend(btn) {
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<svg viewBox="0 0 16 16" fill="none" style="width:13px;height:13px"><path d="M2 8l4 4 8-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Sent!';
+    btn.style.background = '#4ade80';
+    setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 3000);
+  }
+</script>
+</body>
+</html>
